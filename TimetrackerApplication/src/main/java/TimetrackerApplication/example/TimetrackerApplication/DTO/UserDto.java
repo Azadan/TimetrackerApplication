@@ -1,4 +1,3 @@
 package TimetrackerApplication.example.TimetrackerApplication.DTO;
 
-public class UserDto {
-}
+public record UserDto (Long id, String email, String password, boolean isAdmin) {}

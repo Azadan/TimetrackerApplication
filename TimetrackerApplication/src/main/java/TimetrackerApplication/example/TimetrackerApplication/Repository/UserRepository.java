@@ -1,4 +1,9 @@
 package TimetrackerApplication.example.TimetrackerApplication.Repository;
 
-public class UserRepository {
+import TimetrackerApplication.example.TimetrackerApplication.Model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    boolean existsByEmail(String email);
 }

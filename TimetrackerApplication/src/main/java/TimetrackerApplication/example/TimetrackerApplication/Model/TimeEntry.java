@@ -1,9 +1,11 @@
 package TimetrackerApplication.example.TimetrackerApplication.Model;
 
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @RequiredArgsConstructor
@@ -20,7 +22,11 @@ public class TimeEntry {
     @Column(nullable = false)
     private String endTime;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 }

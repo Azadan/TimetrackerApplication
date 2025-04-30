@@ -1,7 +1,9 @@
 package TimetrackerApplication.example.TimetrackerApplication.Model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,16 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String isAdmin;
+    private boolean isAdmin = false;
 
-//    List<TimeEntry> timeEntries = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TimeEntry> timeEntries = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_category",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<>();
 }

@@ -1,4 +1,5 @@
 package TimetrackerApplication.example.TimetrackerApplication.DTO;
 
-public class UserDto {
-}
+import java.util.List;
+
+public record UserDto (Long id, String email, boolean isAdmin, List<Long> categoryId) {}

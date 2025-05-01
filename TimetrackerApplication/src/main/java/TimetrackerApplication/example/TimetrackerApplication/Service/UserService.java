@@ -34,6 +34,17 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with this " + userId + " not found"));
     }
 
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        if (!users.isEmpty()) {
+            return users.stream()
+                    .map(this::convertToDto)
+                    .toList();
+    } else {
+            throw new UserNotFoundException("No users found");
+        }
+    }
+
     public UserDto convertToDto(User user) {
         List<Long> categoryId = user.getCategories().stream()
                 .map(Category::getCategoryId)

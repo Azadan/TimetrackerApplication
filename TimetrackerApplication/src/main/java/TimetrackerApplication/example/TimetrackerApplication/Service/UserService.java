@@ -2,6 +2,7 @@ package TimetrackerApplication.example.TimetrackerApplication.Service;
 
 import TimetrackerApplication.example.TimetrackerApplication.DTO.UserDto;
 import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserAlreadyExistException;
+import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserNotFoundException;
 import TimetrackerApplication.example.TimetrackerApplication.Model.Category;
 import TimetrackerApplication.example.TimetrackerApplication.Model.User;
 import TimetrackerApplication.example.TimetrackerApplication.Repository.UserRepository;
@@ -27,6 +28,10 @@ public class UserService {
                     user.setPassword(createUserRequest1.getPassword());
                     return userRepository.save(user);
                 }).orElseThrow(() -> new UserAlreadyExistException("User with this email already exists"));
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with this " + userId + " not found"));
     }
 
     public UserDto convertToDto(User user) {

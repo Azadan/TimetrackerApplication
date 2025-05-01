@@ -21,6 +21,15 @@ import static org.springframework.http.HttpStatus.*;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/find/all")
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        try {
+            return ResponseEntity.ok(new ApiResponse("Users found", true, userService.getAllUsers()));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), false, null));
+        }
+    }
+
     @GetMapping("/find/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {

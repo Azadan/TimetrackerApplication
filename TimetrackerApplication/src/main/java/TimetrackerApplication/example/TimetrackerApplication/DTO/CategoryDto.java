@@ -1,3 +1,3 @@
 package TimetrackerApplication.example.TimetrackerApplication.DTO;
 
-public record CategoryDto(String startTime, String endTime, Long userId, Long categoryId) { }
+public record CategoryDto(String name, String description, Long userId, Long categoryId) { }

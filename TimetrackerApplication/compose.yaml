@@ -16,6 +16,8 @@ services:
       MYSQL_DATABASE: Timetracker
       MYSQL_USER: timetracker
       MYSQL_PASSWORD: timetracker
+    volumes:
+      - mysql_data:/var/lib/mysql
     ports:
       - "3307:3306"
     healthcheck:
@@ -29,3 +31,7 @@ services:
 networks:
   timetracker-network:
     driver: bridge
+
+volumes:
+    mysql_data:
+        driver: local

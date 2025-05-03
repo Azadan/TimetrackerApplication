@@ -10,6 +10,7 @@ import TimetrackerApplication.example.TimetrackerApplication.Request.CreateCateg
 import TimetrackerApplication.example.TimetrackerApplication.Request.UpdateCategoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -33,15 +34,20 @@ public class CategoryService {
                 }).orElseThrow(() -> new CategoryAlreadyExistException("Category already exists"));
     }
 
-    public Optional<Category> updateCategoryRequest(Long id, UpdateCategoryRequest req) {
-        return Optional.ofNullable(categoryRepository.findById(id)
+    @Transactional
+    public Category updateCategoryRequest(Long id, UpdateCategoryRequest req) {
+        return categoryRepository.findById(id)
                 .map(category -> {
-                    category.setCategoryName(req.getName());
-                    category.setDescription(req.getDescription());
-                    return categoryRepository.save(category);
-                }).orElseThrow(() -> new CategoryNotFoundException("Category with this id not found")));
-    }
+                    if (req.getName() != null && !req.getName().isBlank()) {
+                        category.setCategoryName(req.getName());
+                    }
+                    if (req.getDescription() != null && !req.getDescription().isBlank()) {
+                        category.setDescription(req.getDescription());
+                    }
 
+                    return categoryRepository.save(category);
+                }).orElseThrow(() -> new CategoryNotFoundException("Category with this id not found"));
+    }
     public CategoryDto convertToDto(Category category) {
         return Optional.ofNullable(category)
                 .map(cat -> new CategoryDto(

@@ -9,7 +9,6 @@ import TimetrackerApplication.example.TimetrackerApplication.Request.CreateCateg
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,13 +19,14 @@ public class CategoryService {
     private final UserService userService;
 
     public Category createCategory(CreateCategoryRequest req) {
-        return Optional.of(req).filter(category -> !categoryRepository.existsByCategoryNameAndUserId(req.getName(), req.getUserId()))
+        return Optional.of(req).filter(category -> !categoryRepository.existsByCategoryNameAndUser_UserId(req.getName(), req.getUserId()))
                 .map(request -> {
                     Category category = new Category();
                     category.setCategoryName(request.getName());
                     category.setDescription(request.getDescription());
                     User user = userService.getUserById(request.getUserId());
                     category.setUser(user);
+                    user.getCategories().add(category);
                     return categoryRepository.save(category);
                 }).orElseThrow(() -> new CategoryAlreadyExistException("Category already exists"));
     }

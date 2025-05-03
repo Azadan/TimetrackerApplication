@@ -2,10 +2,12 @@ package TimetrackerApplication.example.TimetrackerApplication.Service;
 
 import TimetrackerApplication.example.TimetrackerApplication.DTO.CategoryDto;
 import TimetrackerApplication.example.TimetrackerApplication.Exceptions.CategoryAlreadyExistException;
+import TimetrackerApplication.example.TimetrackerApplication.Exceptions.CategoryNotFoundException;
 import TimetrackerApplication.example.TimetrackerApplication.Model.Category;
 import TimetrackerApplication.example.TimetrackerApplication.Model.User;
 import TimetrackerApplication.example.TimetrackerApplication.Repository.CategoryRepository;
 import TimetrackerApplication.example.TimetrackerApplication.Request.CreateCategoryRequest;
+import TimetrackerApplication.example.TimetrackerApplication.Request.UpdateCategoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,15 @@ public class CategoryService {
                     user.getCategories().add(category);
                     return categoryRepository.save(category);
                 }).orElseThrow(() -> new CategoryAlreadyExistException("Category already exists"));
+    }
+
+    public Optional<Category> updateCategoryRequest(Long id, UpdateCategoryRequest req) {
+        return Optional.ofNullable(categoryRepository.findById(id)
+                .map(category -> {
+                    category.setCategoryName(req.getName());
+                    category.setDescription(req.getDescription());
+                    return categoryRepository.save(category);
+                }).orElseThrow(() -> new CategoryNotFoundException("Category with this id not found")));
     }
 
     public CategoryDto convertToDto(Category category) {

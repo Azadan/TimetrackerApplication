@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Entity
 @RequiredArgsConstructor
@@ -17,10 +19,10 @@ public class TimeEntry {
     private Long entryId;
 
     @Column(nullable = false)
-    private String startTime;
+    private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private String endTime;
+    private LocalDateTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

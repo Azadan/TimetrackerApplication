@@ -31,6 +31,13 @@ public class CategoryService {
         }
     }
 
+    public Category getCategoryByIdAndUser(Long categoryId, Long userId) {
+        return categoryRepository.findById(categoryId)
+                .filter(category -> category.getUser().getUserId().equals(userId))
+                .orElseThrow(() -> new CategoryNotFoundException("Category with this id not found"));
+
+    }
+
     public Category createCategory(CreateCategoryRequest req) {
         return Optional.of(req).filter(category -> !categoryRepository.existsByCategoryNameAndUser_UserId(req.getName(), req.getUserId()))
                 .map(request -> {

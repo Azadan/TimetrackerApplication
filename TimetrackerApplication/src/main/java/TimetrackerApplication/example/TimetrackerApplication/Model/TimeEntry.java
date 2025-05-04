@@ -21,7 +21,7 @@ public class TimeEntry {
     @Column(nullable = false)
     private LocalDateTime startTime;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime endTime;
 
     private boolean isActive = true;

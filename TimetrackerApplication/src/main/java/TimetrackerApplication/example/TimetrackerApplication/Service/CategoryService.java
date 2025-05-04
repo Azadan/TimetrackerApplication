@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +21,15 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final UserService userService;
+
+    public List<Category> getCategoryByUserId(Long userId) {
+        List<Category> categories = categoryRepository.findByUser_UserId(userId);
+        if (categories != null) {
+            return categories;
+        } else {
+            throw new CategoryNotFoundException("Category with this userId not found");
+        }
+    }
 
     public Category createCategory(CreateCategoryRequest req) {
         return Optional.of(req).filter(category -> !categoryRepository.existsByCategoryNameAndUser_UserId(req.getName(), req.getUserId()))
@@ -56,5 +66,13 @@ public class CategoryService {
                         cat.getUser().getUserId(),
                         cat.getCategoryId()
                 )).orElse(null);
+    }
+
+    public List<CategoryDto> listConvertToDto(List<Category> categories) {
+        return Optional.ofNullable(categories)
+                .map(cat -> cat.stream()
+                        .map(this::convertToDto)
+                        .toList())
+                .orElse(null);
     }
 }

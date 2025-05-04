@@ -5,6 +5,7 @@ import TimetrackerApplication.example.TimetrackerApplication.Exceptions.Category
 import TimetrackerApplication.example.TimetrackerApplication.Exceptions.TimeEntryNotFoundException;
 import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserNotFoundException;
 import TimetrackerApplication.example.TimetrackerApplication.Model.TimeEntry;
+import TimetrackerApplication.example.TimetrackerApplication.Model.User;
 import TimetrackerApplication.example.TimetrackerApplication.Repository.TimeEntryRepository;
 import TimetrackerApplication.example.TimetrackerApplication.Request.CheckInRequest;
 import TimetrackerApplication.example.TimetrackerApplication.Request.CheckOutRequest;
@@ -12,10 +13,9 @@ import TimetrackerApplication.example.TimetrackerApplication.Response.ApiRespons
 import TimetrackerApplication.example.TimetrackerApplication.Service.TimeEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -25,6 +25,21 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("/api/v1/timeentry")
 public class TimeEntryController {
     private final TimeEntryService timeEntryService;
+
+    @GetMapping("/findbyuser/{userId}")
+    public ResponseEntity<ApiResponse> findByUserId(@PathVariable Long userId) {
+        try {
+            List<TimeEntry> timeEntries = timeEntryService.getAllEntriesByUserId(userId);
+            List<TimeEntryDTO> timeEntryDTOS = timeEntryService.convertToDtoList(timeEntries);
+            return ResponseEntity.ok(new ApiResponse("Time entries found", true, timeEntryDTOS));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), false, null));
+        } catch (TimeEntryNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No time entries found for this user", false, null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("User with this userId not found", false, null));
+        }
+    }
 
     @PostMapping("/checkin")
     public ResponseEntity<ApiResponse> checkIn(@RequestBody CheckInRequest checkInRequest) {

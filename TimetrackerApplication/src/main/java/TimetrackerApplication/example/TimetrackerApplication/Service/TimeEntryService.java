@@ -1,6 +1,7 @@
 package TimetrackerApplication.example.TimetrackerApplication.Service;
 
 import TimetrackerApplication.example.TimetrackerApplication.DTO.TimeEntryDTO;
+import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserNotFoundException;
 import TimetrackerApplication.example.TimetrackerApplication.Model.Category;
 import TimetrackerApplication.example.TimetrackerApplication.Model.TimeEntry;
 import TimetrackerApplication.example.TimetrackerApplication.Model.User;
@@ -63,6 +64,14 @@ public class TimeEntryService {
         return timeEntries.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<TimeEntry> getAllEntriesByUserId (Long userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            throw new UserNotFoundException("User has not been found");
+        }
+        return user.getTimeEntries();
     }
 
     public TimeEntryDTO convertToDto(TimeEntry timeEntry) {

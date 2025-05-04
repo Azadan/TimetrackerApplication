@@ -1,6 +1,7 @@
 package TimetrackerApplication.example.TimetrackerApplication.Service;
 
 import TimetrackerApplication.example.TimetrackerApplication.DTO.CategoryDto;
+import TimetrackerApplication.example.TimetrackerApplication.DTO.TimeEntryDTO;
 import TimetrackerApplication.example.TimetrackerApplication.DTO.UserDto;
 import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserAlreadyExistException;
 import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserNotFoundException;
@@ -56,11 +57,23 @@ public class UserService {
                 ))
                 .toList();
 
+        List<TimeEntryDTO> timeEntryDtos = user.getTimeEntries().stream()
+                .map(timeEntry -> new TimeEntryDTO(
+                        timeEntry.getEntryId(),
+                        timeEntry.getStartTime(),
+                        timeEntry.getEndTime(),
+                        timeEntry.isActive(),
+                        user.getUserId(),
+                        timeEntry.getCategory().getCategoryId()
+                ))
+                .toList();
+
     return new UserDto(
             user.getUserId(),
             user.getEmail(),
             user.isAdmin(),
-            categoryDtos
+            categoryDtos,
+            timeEntryDtos
     );
     }
 }

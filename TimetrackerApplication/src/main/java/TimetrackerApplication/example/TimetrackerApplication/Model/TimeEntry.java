@@ -24,6 +24,8 @@ public class TimeEntry {
     @Column(nullable = false)
     private LocalDateTime endTime;
 
+    private boolean isActive = true;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

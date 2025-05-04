@@ -21,6 +21,15 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserService userService;
 
+    public Category getCategoryByUserId(Long userId) {
+        Category category = categoryRepository.findByUser_UserId(userId);
+        if (category != null) {
+            return category;
+        } else {
+            throw new CategoryNotFoundException("Category with this userId not found");
+        }
+    }
+
     public Category createCategory(CreateCategoryRequest req) {
         return Optional.of(req).filter(category -> !categoryRepository.existsByCategoryNameAndUser_UserId(req.getName(), req.getUserId()))
                 .map(request -> {

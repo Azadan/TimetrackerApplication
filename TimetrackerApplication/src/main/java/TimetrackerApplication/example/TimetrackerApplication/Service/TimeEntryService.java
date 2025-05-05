@@ -1,22 +1,22 @@
 package TimetrackerApplication.example.TimetrackerApplication.Service;
 
+import TimetrackerApplication.example.TimetrackerApplication.DTO.StatisticsDto;
 import TimetrackerApplication.example.TimetrackerApplication.DTO.TimeEntryDTO;
+import TimetrackerApplication.example.TimetrackerApplication.Exceptions.TimeEntryNotFoundException;
 import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserNotFoundException;
 import TimetrackerApplication.example.TimetrackerApplication.Model.Category;
 import TimetrackerApplication.example.TimetrackerApplication.Model.TimeEntry;
 import TimetrackerApplication.example.TimetrackerApplication.Model.User;
-import TimetrackerApplication.example.TimetrackerApplication.Repository.CategoryRepository;
 import TimetrackerApplication.example.TimetrackerApplication.Repository.TimeEntryRepository;
 import TimetrackerApplication.example.TimetrackerApplication.Request.CheckInRequest;
 import TimetrackerApplication.example.TimetrackerApplication.Request.CheckOutRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,18 +60,41 @@ public class TimeEntryService {
         return timeEntryRepository.save(timeEntry);
     }
 
-    public List<TimeEntryDTO> convertToDtoList(List<TimeEntry> timeEntries) {
-        return timeEntries.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
     public List<TimeEntry> getAllEntriesByUserId (Long userId) {
         User user = userService.getUserById(userId);
         if (user == null) {
             throw new UserNotFoundException("User has not been found");
         }
         return user.getTimeEntries();
+    }
+
+
+    public Map<String, Long> calculateStatistics(Long userId) {
+        List<TimeEntry> timeEntries = getAllEntriesByUserId(userId);
+        if (timeEntries.isEmpty()) {
+            throw new TimeEntryNotFoundException("No time entries found for this user");
+        }
+
+        LocalDateTime now = LocalDateTime.now(); // Assuming this is Thursday
+        LocalDateTime startOfWeek = now.minusDays(now.getDayOfWeek().getValue() - 1).toLocalDate().atStartOfDay();
+        LocalDateTime endOfWeek = startOfWeek.plusDays(7).minusNanos(1);
+
+        return timeEntries.stream()
+                .filter(entry -> !entry.isActive() && entry.getEndTime() != null)
+                .filter(entry -> !entry.getStartTime().isBefore(startOfWeek) && !entry.getStartTime().isAfter(endOfWeek))
+                .collect(Collectors.groupingBy(
+                        entry -> entry.getCategory().getCategoryName(),
+                        Collectors.summingLong(entry -> {
+                            Duration duration = Duration.between(entry.getStartTime(), entry.getEndTime());
+                            return duration.toMinutes();
+                        })
+                ));
+    }
+
+    public List<TimeEntryDTO> convertToDtoList(List<TimeEntry> timeEntries) {
+        return timeEntries.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public TimeEntryDTO convertToDto(TimeEntry timeEntry) {
@@ -83,5 +106,11 @@ public class TimeEntryService {
                 timeEntry.getUser().getUserId(),
                 timeEntry.getCategory().getCategoryId()
         );
+    }
+
+    public List<StatisticsDto> convertStatisticsToDto(Map<String, Long> statistics) {
+        return statistics.entrySet().stream()
+                .map(entry -> new StatisticsDto(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }

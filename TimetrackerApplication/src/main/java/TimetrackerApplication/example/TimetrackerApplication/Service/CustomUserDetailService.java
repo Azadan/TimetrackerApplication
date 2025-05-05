@@ -4,6 +4,7 @@ import TimetrackerApplication.example.TimetrackerApplication.Exceptions.UserNotF
 import TimetrackerApplication.example.TimetrackerApplication.Model.User;
 import TimetrackerApplication.example.TimetrackerApplication.Repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -11,13 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
-    public CustomUserDetailService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UserNotFoundException {

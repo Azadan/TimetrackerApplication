@@ -1,9 +1,8 @@
 package TimetrackerApplication.example.TimetrackerApplication.Util;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

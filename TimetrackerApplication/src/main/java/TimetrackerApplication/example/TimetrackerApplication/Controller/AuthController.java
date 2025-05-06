@@ -54,6 +54,7 @@ public class AuthController {
         User user = new User();
         user.setEmail(req.getEmail());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setAdmin(req.isAdmin());
         userRepository.save(user);
         UserDto userDto = userService.convertToDto(user);
         return ResponseEntity.ok(new ApiResponse("User registered successfully",true, userDto));

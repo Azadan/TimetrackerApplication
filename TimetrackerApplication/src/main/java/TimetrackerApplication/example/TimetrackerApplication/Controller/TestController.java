@@ -44,23 +44,21 @@ public class TestController {
         return "User Content.";
     }
 
-    @PostMapping("/test/create-test-user")
-    public ResponseEntity<ApiResponse> createTestUser() {
+    @PostMapping("/test/create-test-user1")
+    public ResponseEntity<ApiResponse> createTestUser1() {
         try {
-            // Check if user already exists
-            if (userRepository.existsByEmail("tes1t@example.com")) {
-                return ResponseEntity.status(CONFLICT).body(new ApiResponse("Test user already exists", false, null));
+            String email = "user1@example.com";
+
+            if (userRepository.existsByEmail(email)) {
+                return ResponseEntity.status(CONFLICT).body(new ApiResponse("Test user 1 already exists", false, null));
             }
 
-            // Create user
-
             User user = new User();
-            user.setEmail("test1@example.com");
+            user.setEmail(email);
             user.setPassword(passwordEncoder.encode("password"));
             user.setAdmin(false);
             User savedUser = userRepository.save(user);
 
-            // Create categories
             Category workCategory = new Category();
             workCategory.setCategoryName("Work");
             workCategory.setDescription("Work-related activities");
@@ -79,40 +77,293 @@ public class TestController {
             personalCategory.setUser(savedUser);
             Category savedPersonalCategory = categoryRepository.save(personalCategory);
 
-            // Create time entries
-            // Completed work entry
+            Category healthCategory = new Category();
+            healthCategory.setCategoryName("Health");
+            healthCategory.setDescription("Health and wellness activities");
+            healthCategory.setUser(savedUser);
+            Category savedHealthCategory = categoryRepository.save(healthCategory);
+
+
             TimeEntry workEntry = new TimeEntry();
-            workEntry.setStartTime(LocalDateTime.now().minusDays(2));
-            workEntry.setEndTime(LocalDateTime.now().minusDays(2).plusHours(4));
+            workEntry.setStartTime(LocalDateTime.now().minusDays(5));
+            workEntry.setEndTime(LocalDateTime.now().minusDays(5).plusHours(2));
             workEntry.setActive(false);
             workEntry.setUser(savedUser);
             workEntry.setCategory(savedWorkCategory);
             timeEntryRepository.save(workEntry);
 
-            // Completed study entry
             TimeEntry studyEntry = new TimeEntry();
-            studyEntry.setStartTime(LocalDateTime.now().minusDays(1));
-            studyEntry.setEndTime(LocalDateTime.now().minusDays(1).plusHours(2));
+            studyEntry.setStartTime(LocalDateTime.now().minusDays(4));
+            studyEntry.setEndTime(LocalDateTime.now().minusDays(4).plusHours(3));
             studyEntry.setActive(false);
             studyEntry.setUser(savedUser);
             studyEntry.setCategory(savedStudyCategory);
             timeEntryRepository.save(studyEntry);
 
-            // Active personal entry
-            TimeEntry activeEntry = new TimeEntry();
-            activeEntry.setStartTime(LocalDateTime.now().minusHours(1));
-            activeEntry.setEndTime(null);
-            activeEntry.setActive(true);
-            activeEntry.setUser(savedUser);
-            activeEntry.setCategory(savedPersonalCategory);
-            timeEntryRepository.save(activeEntry);
+            TimeEntry personalEntry = new TimeEntry();
+            personalEntry.setStartTime(LocalDateTime.now().minusDays(3));
+            personalEntry.setEndTime(LocalDateTime.now().minusDays(3).plusHours(1));
+            personalEntry.setActive(false);
+            personalEntry.setUser(savedUser);
+            personalEntry.setCategory(savedPersonalCategory);
+            timeEntryRepository.save(personalEntry);
 
-            // Convert user to DTO for response
+            TimeEntry healthEntry = new TimeEntry();
+            healthEntry.setStartTime(LocalDateTime.now().minusDays(2));
+            healthEntry.setEndTime(LocalDateTime.now().minusDays(2).plusHours(2));
+            healthEntry.setActive(false);
+            healthEntry.setUser(savedUser);
+            healthEntry.setCategory(savedHealthCategory);
+            timeEntryRepository.save(healthEntry);
+
             UserDto userDto = userService.convertToDto(savedUser);
 
-            return ResponseEntity.ok(new ApiResponse("Test user created successfully with categories and time entries", true, userDto));
+            return ResponseEntity.ok(new ApiResponse("Test user 1 created successfully", true, userDto));
         } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Failed to create test user: " + e.getMessage(), false, null));
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Failed to create test user 1: " + e.getMessage(), false, null));
+        }
+    }
+
+    @PostMapping("/test/create-test-user2")
+    public ResponseEntity<ApiResponse> createTestUser2() {
+        try {
+            String email = "user2@example.com";
+
+            if (userRepository.existsByEmail(email)) {
+                return ResponseEntity.status(CONFLICT).body(new ApiResponse("Test user 2 already exists", false, null));
+            }
+
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode("password"));
+            user.setAdmin(false);
+            User savedUser = userRepository.save(user);
+
+            Category codingCategory = new Category();
+            codingCategory.setCategoryName("Coding");
+            codingCategory.setDescription("Programming tasks");
+            codingCategory.setUser(savedUser);
+            Category savedCodingCategory = categoryRepository.save(codingCategory);
+
+            Category readingCategory = new Category();
+            readingCategory.setCategoryName("Reading");
+            readingCategory.setDescription("Books and articles");
+            readingCategory.setUser(savedUser);
+            Category savedReadingCategory = categoryRepository.save(readingCategory);
+
+            Category exerciseCategory = new Category();
+            exerciseCategory.setCategoryName("Exercise");
+            exerciseCategory.setDescription("Physical activities");
+            exerciseCategory.setUser(savedUser);
+            Category savedExerciseCategory = categoryRepository.save(exerciseCategory);
+
+            Category entertainmentCategory = new Category();
+            entertainmentCategory.setCategoryName("Entertainment");
+            entertainmentCategory.setDescription("Movies and games");
+            entertainmentCategory.setUser(savedUser);
+            Category savedEntertainmentCategory = categoryRepository.save(entertainmentCategory);
+
+
+            TimeEntry codingEntry = new TimeEntry();
+            codingEntry.setStartTime(LocalDateTime.now().minusDays(6));
+            codingEntry.setEndTime(LocalDateTime.now().minusDays(6).plusHours(4));
+            codingEntry.setActive(false);
+            codingEntry.setUser(savedUser);
+            codingEntry.setCategory(savedCodingCategory);
+            timeEntryRepository.save(codingEntry);
+
+
+            TimeEntry readingEntry = new TimeEntry();
+            readingEntry.setStartTime(LocalDateTime.now().minusDays(5));
+            readingEntry.setEndTime(LocalDateTime.now().minusDays(5).plusHours(2));
+            readingEntry.setActive(false);
+            readingEntry.setUser(savedUser);
+            readingEntry.setCategory(savedReadingCategory);
+            timeEntryRepository.save(readingEntry);
+
+
+            TimeEntry exerciseEntry = new TimeEntry();
+            exerciseEntry.setStartTime(LocalDateTime.now().minusDays(4));
+            exerciseEntry.setEndTime(LocalDateTime.now().minusDays(4).plusHours(1));
+            exerciseEntry.setActive(false);
+            exerciseEntry.setUser(savedUser);
+            exerciseEntry.setCategory(savedExerciseCategory);
+            timeEntryRepository.save(exerciseEntry);
+
+
+            TimeEntry entertainmentEntry = new TimeEntry();
+            entertainmentEntry.setStartTime(LocalDateTime.now().minusDays(3));
+            entertainmentEntry.setEndTime(LocalDateTime.now().minusDays(3).plusHours(3));
+            entertainmentEntry.setActive(false);
+            entertainmentEntry.setUser(savedUser);
+            entertainmentEntry.setCategory(savedEntertainmentCategory);
+            timeEntryRepository.save(entertainmentEntry);
+
+
+            UserDto userDto = userService.convertToDto(savedUser);
+
+            return ResponseEntity.ok(new ApiResponse("Test user 2 created successfully", true, userDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Failed to create test user 2: " + e.getMessage(), false, null));
+        }
+    }
+
+    @PostMapping("/test/create-test-user3")
+    public ResponseEntity<ApiResponse> createTestUser3() {
+        try {
+            String email = "user3@example.com";
+
+            if (userRepository.existsByEmail(email)) {
+                return ResponseEntity.status(CONFLICT).body(new ApiResponse("Test user 3 already exists", false, null));
+            }
+
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode("password"));
+            user.setAdmin(false);
+            User savedUser = userRepository.save(user);
+
+            Category projectACategory = new Category();
+            projectACategory.setCategoryName("Project A");
+            projectACategory.setDescription("Project A tasks");
+            projectACategory.setUser(savedUser);
+            Category savedProjectACategory = categoryRepository.save(projectACategory);
+
+            Category projectBCategory = new Category();
+            projectBCategory.setCategoryName("Project B");
+            projectBCategory.setDescription("Project B tasks");
+            projectBCategory.setUser(savedUser);
+            Category savedProjectBCategory = categoryRepository.save(projectBCategory);
+
+            Category projectCCategory = new Category();
+            projectCCategory.setCategoryName("Project C");
+            projectCCategory.setDescription("Project C tasks");
+            projectCCategory.setUser(savedUser);
+            Category savedProjectCCategory = categoryRepository.save(projectCCategory);
+
+            Category projectDCategory = new Category();
+            projectDCategory.setCategoryName("Project D");
+            projectDCategory.setDescription("Project D tasks");
+            projectDCategory.setUser(savedUser);
+            Category savedProjectDCategory = categoryRepository.save(projectDCategory);
+
+
+            TimeEntry projectAEntry = new TimeEntry();
+            projectAEntry.setStartTime(LocalDateTime.now().minusDays(7));
+            projectAEntry.setEndTime(LocalDateTime.now().minusDays(7).plusHours(5));
+            projectAEntry.setActive(false);
+            projectAEntry.setUser(savedUser);
+            projectAEntry.setCategory(savedProjectACategory);
+            timeEntryRepository.save(projectAEntry);
+
+            TimeEntry projectBEntry = new TimeEntry();
+            projectBEntry.setStartTime(LocalDateTime.now().minusDays(6));
+            projectBEntry.setEndTime(LocalDateTime.now().minusDays(6).plusHours(3));
+            projectBEntry.setActive(false);
+            projectBEntry.setUser(savedUser);
+            projectBEntry.setCategory(savedProjectBCategory);
+            timeEntryRepository.save(projectBEntry);
+
+            TimeEntry projectCEntry = new TimeEntry();
+            projectCEntry.setStartTime(LocalDateTime.now().minusDays(5));
+            projectCEntry.setEndTime(LocalDateTime.now().minusDays(5).plusHours(4));
+            projectCEntry.setActive(false);
+            projectCEntry.setUser(savedUser);
+            projectCEntry.setCategory(savedProjectCCategory);
+            timeEntryRepository.save(projectCEntry);
+
+            TimeEntry projectDEntry = new TimeEntry();
+            projectDEntry.setStartTime(LocalDateTime.now().minusDays(4));
+            projectDEntry.setEndTime(LocalDateTime.now().minusDays(4).plusHours(2));
+            projectDEntry.setActive(false);
+            projectDEntry.setUser(savedUser);
+            projectDEntry.setCategory(savedProjectDCategory);
+            timeEntryRepository.save(projectDEntry);
+
+            UserDto userDto = userService.convertToDto(savedUser);
+
+            return ResponseEntity.ok(new ApiResponse("Test user 3 created successfully", true, userDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Failed to create test user 3: " + e.getMessage(), false, null));
+        }
+    }
+
+    @PostMapping("/test/create-test-user4")
+    public ResponseEntity<ApiResponse> createTestUser4() {
+        try {
+            String email = "user4@example.com";
+
+            if (userRepository.existsByEmail(email)) {
+                return ResponseEntity.status(CONFLICT).body(new ApiResponse("Test user 4 already exists", false, null));
+            }
+
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode("password"));
+            user.setAdmin(false);
+            User savedUser = userRepository.save(user);
+
+            Category morningCategory = new Category();
+            morningCategory.setCategoryName("Morning");
+            morningCategory.setDescription("Morning activities");
+            morningCategory.setUser(savedUser);
+            Category savedMorningCategory = categoryRepository.save(morningCategory);
+
+            Category afternoonCategory = new Category();
+            afternoonCategory.setCategoryName("Afternoon");
+            afternoonCategory.setDescription("Afternoon activities");
+            afternoonCategory.setUser(savedUser);
+            Category savedAfternoonCategory = categoryRepository.save(afternoonCategory);
+
+            Category eveningCategory = new Category();
+            eveningCategory.setCategoryName("Evening");
+            eveningCategory.setDescription("Evening activities");
+            eveningCategory.setUser(savedUser);
+            Category savedEveningCategory = categoryRepository.save(eveningCategory);
+
+            Category nightCategory = new Category();
+            nightCategory.setCategoryName("Night");
+            nightCategory.setDescription("Night activities");
+            nightCategory.setUser(savedUser);
+            Category savedNightCategory = categoryRepository.save(nightCategory);
+
+            TimeEntry morningEntry = new TimeEntry();
+            morningEntry.setStartTime(LocalDateTime.now().minusDays(8));
+            morningEntry.setEndTime(LocalDateTime.now().minusDays(8).plusHours(3));
+            morningEntry.setActive(false);
+            morningEntry.setUser(savedUser);
+            morningEntry.setCategory(savedMorningCategory);
+            timeEntryRepository.save(morningEntry);
+
+            TimeEntry afternoonEntry = new TimeEntry();
+            afternoonEntry.setStartTime(LocalDateTime.now().minusDays(7));
+            afternoonEntry.setEndTime(LocalDateTime.now().minusDays(7).plusHours(4));
+            afternoonEntry.setActive(false);
+            afternoonEntry.setUser(savedUser);
+            afternoonEntry.setCategory(savedAfternoonCategory);
+            timeEntryRepository.save(afternoonEntry);
+
+            TimeEntry eveningEntry = new TimeEntry();
+            eveningEntry.setStartTime(LocalDateTime.now().minusDays(6));
+            eveningEntry.setEndTime(LocalDateTime.now().minusDays(6).plusHours(2));
+            eveningEntry.setActive(false);
+            eveningEntry.setUser(savedUser);
+            eveningEntry.setCategory(savedEveningCategory);
+            timeEntryRepository.save(eveningEntry);
+
+            TimeEntry nightEntry = new TimeEntry();
+            nightEntry.setStartTime(LocalDateTime.now().minusDays(5));
+            nightEntry.setEndTime(LocalDateTime.now().minusDays(5).plusHours(1));
+            nightEntry.setActive(false);
+            nightEntry.setUser(savedUser);
+            nightEntry.setCategory(savedNightCategory);
+            timeEntryRepository.save(nightEntry);
+
+            UserDto userDto = userService.convertToDto(savedUser);
+
+            return ResponseEntity.ok(new ApiResponse("Test user 4 created successfully", true, userDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Failed to create test user 4: " + e.getMessage(), false, null));
         }
     }
 

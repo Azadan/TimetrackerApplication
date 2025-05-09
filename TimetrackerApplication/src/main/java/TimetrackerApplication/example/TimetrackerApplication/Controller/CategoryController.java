@@ -22,7 +22,6 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
-@CrossOrigin("*")
 public class CategoryController {
     private final CategoryService categoryService;
     private final CategoryRepository categoryRepository;

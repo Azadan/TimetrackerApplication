@@ -42,7 +42,9 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return new AuthenticationResponse(jwtUtils.generateToken(userDetails.getUsername(), user.getUserId()));    }
+
+        return new AuthenticationResponse(jwtUtils.generateToken(userDetails.getUsername(), user.getUserId(), user.isAdmin()));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@RequestBody CreateUserRequest req) {

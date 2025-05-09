@@ -30,10 +30,11 @@ public class JwtUtil {
     }
 
     //Genererar en JWT-token
-    public String generateToken(String email, Long userId) {
+    public String generateToken(String email, Long userId, boolean isAdmin) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId)
+                .claim("isAdmin", isAdmin)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime()+ expiration))
                 .signWith(key, SignatureAlgorithm.HS256)

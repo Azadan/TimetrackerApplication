@@ -50,7 +50,7 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateCategory(@RequestBody UpdateCategoryRequest req, @PathVariable long id) {
         try {
             Category category = categoryService.updateCategoryRequest(id, req);

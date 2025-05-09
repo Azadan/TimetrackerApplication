@@ -115,4 +115,33 @@ public class TestController {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse("Failed to create test user: " + e.getMessage(), false, null));
         }
     }
+
+    @PostMapping("/test/create-admin")
+    public ResponseEntity<ApiResponse> createAdminUser() {
+        try {
+            String adminEmail = "admin@example.com";
+            String adminPassword = "admin123";
+
+
+            if (userRepository.existsByEmail(adminEmail)) {
+                return ResponseEntity.ok(new ApiResponse("Admin user already exists", true, null));
+            }
+
+
+            User adminUser = new User();
+            adminUser.setEmail(adminEmail);
+            adminUser.setPassword(passwordEncoder.encode(adminPassword));
+            adminUser.setAdmin(true);
+
+
+            User savedUser = userRepository.save(adminUser);
+
+
+            UserDto userDto = userService.convertToDto(savedUser);
+
+            return ResponseEntity.ok(new ApiResponse("Admin user created successfully", true, userDto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Error creating admin user: " + e.getMessage(), false, null));
+        }
+    }
 }

@@ -54,6 +54,8 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/api/v1/test/**").permitAll()
                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/user/find/all").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/timeentry/statistics/weekly/**").hasAnyRole("ADMIN", "USER")
                                 .anyRequest().hasRole("USER")
                 );
 

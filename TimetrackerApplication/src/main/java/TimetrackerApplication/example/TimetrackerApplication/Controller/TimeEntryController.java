@@ -85,4 +85,19 @@ public class TimeEntryController {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse("Time entry is already checked out", false, null));
         }
     }
+
+    @GetMapping("/active/{userId}")
+    public ResponseEntity<ApiResponse> getActiveTimeEntryByUserId(@PathVariable Long userId) {
+        try {
+            TimeEntry activeEntry = timeEntryService.getActiveTimeEntryById(userId);
+            if (activeEntry != null) {
+                TimeEntryDTO timeEntryDTO = timeEntryService.convertToDto(activeEntry);
+                return ResponseEntity.ok(new ApiResponse("Active time entry found", true, timeEntryDTO));
+            } else {
+                return ResponseEntity.ok(new ApiResponse("No active time entry found for this user", false, null));
+            }
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("User with this userId not found", false, null));
+        }
+    }
 }

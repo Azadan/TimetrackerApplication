@@ -91,6 +91,17 @@ public class TimeEntryService {
                 ));
     }
 
+    public TimeEntry getActiveTimeEntryById(Long entryId) {
+        User user = userService.getUserById(entryId);
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+        return user.getTimeEntries().stream()
+                .filter(TimeEntry::isActive)
+                .findFirst()
+                .orElse(null);
+    }
+
     public List<TimeEntryDTO> convertToDtoList(List<TimeEntry> timeEntries) {
         return timeEntries.stream()
                 .map(this::convertToDto)

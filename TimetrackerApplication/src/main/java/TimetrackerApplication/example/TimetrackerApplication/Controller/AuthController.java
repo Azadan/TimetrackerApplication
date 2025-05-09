@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -41,8 +40,9 @@ public class AuthController {
                 )
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return new AuthenticationResponse(jwtUtils.generateToken(userDetails.getUsername()));
-    }
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return new AuthenticationResponse(jwtUtils.generateToken(userDetails.getUsername(), user.getUserId()));    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@RequestBody CreateUserRequest req) {

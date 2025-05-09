@@ -23,7 +23,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/timeentry")
-@CrossOrigin("*")
 public class TimeEntryController {
     private final TimeEntryService timeEntryService;
 
